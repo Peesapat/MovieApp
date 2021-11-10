@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/MovieApp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/MovieQ" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Moviee" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Tutorials/Android-Studio-4.0-Tutorial" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Tutorials/Android-Studio-Tutorial-2020" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/dantee" vcs="Git" />
+  </component>
+</project>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/signinbtn1"
+        android:layout_width="230dp"
+        android:layout_height="38dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="403dp"
+        android:background="@drawable/bg_button_signin"
+        android:fontFamily="@font/roboto"
+        android:text="Sign In"
+        android:textColor="#000000" />
+
+    <Button
+        android:id="@+id/cnabtn"
+        android:layout_width="230dp"
+        android:layout_height="38dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="452dp"
+        android:background="@drawable/bg_button_cna"
+        android:fontFamily="@font/roboto"
+        android:includeFontPadding="false"
+        android:text="Create New Account"
+        android:textColor="#887E7E" />
+</RelativeLayout>
