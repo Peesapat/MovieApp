@@ -10,7 +10,9 @@
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_home.xml" value="0.33" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_main.xml" value="0.24048913043478262" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_sign_in.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_sign_up.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_sign_up.xml" value="0.33" />
+        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/movie_card.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/movie_cardview.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
