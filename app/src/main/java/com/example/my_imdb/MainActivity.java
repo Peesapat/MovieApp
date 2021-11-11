@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             startActivity(new Intent(this, HomeActivity.class));
+            overridePendingTransition(0, 0);
         } else {
             d("dbug", "user not logged in");
         }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,7 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,15 +39,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Button signoutbtn = findViewById(R.id.signOutButton);
-        signoutbtn.setOnClickListener(this);
-
-        recyclerView  = findViewById(R.id.movieList);
+        recyclerView = findViewById(R.id.movieList);
         movies = new ArrayList<>();
         extractMovies();
 
+        //Bottom Navigator
+        LinearLayout homeBtn = findViewById(R.id.bottomNav1);
+        homeBtn.setOnClickListener(this);
+        LinearLayout profileBtn = findViewById(R.id.bottomNav5);
+        profileBtn.setOnClickListener(this);
+
 
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bottomNav5:
+                startActivity( new Intent(this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+        }
+    }
+
+
 
     private void extractMovies() {
         Log.d("dbug", "here: ");
@@ -65,8 +80,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             JSONObject movieObject = Jarray.getJSONObject(i);
                             Movie movie = new Movie();
-                            movie.setTitle(movieObject.getString("title").toString());
-                            movie.setCrew(movieObject.getString("crew").toString());
+                            movie.setTitle(movieObject.getString("fullTitle").toString());
+                            movie.setImDbRating(movieObject.getString("imDbRating").toString());
                             movie.setImage(movieObject.getString("image").toString());
                             movies.add(movie);
 
@@ -75,7 +90,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             e.printStackTrace();
                         }
 
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
                         movieAdapter = new MovieListAdapter(getApplicationContext(), movies);
                         recyclerView.setAdapter(movieAdapter);
                     }
@@ -91,61 +106,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         queue.add(jsonObjectRequest);
-//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, JSON_URL, null, new Response.Listener<JSONArray>() {
-//            @Override
-//            public void onResponse(JSONArray response) {
-//
-//                try {
-//                    JSONObject Jasonobject = new JSONObject(response);
-//                    JSONArray Jarray = Jasonobject.getJSONArray("movies");
-//
-//
-//                    for (int i = 0; i < response.length(); i++) {
-//
-//                        try {
-//                            JSONObject movieObject = response.getJSONObject(i);
-//                            Movie movie = new Movie();
-//                            movie.setTitle(movieObject.getString("title").toString());
-//                            movie.setCrew(movieObject.getString("crew").toString());
-//                            movie.setImage(movieObject.getString("image").toString());
-//                            movies.add(movie);
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                        movieAdapter = new MovieListAdapter(getApplicationContext(), movies);
-//                        recyclerView.setAdapter(movieAdapter);
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.d("dbug", "onErrorResponse: " + error.getMessage());
-//            }
-//        });
-//
-//        queue.add(jsonArrayRequest);
     }
 
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.signOutButton:
-                SignOut();
-        }
-    }
-
-    public void SignOut() {
-        FirebaseAuth.getInstance().signOut();
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-    }
 }

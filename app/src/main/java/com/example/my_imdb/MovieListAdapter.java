@@ -37,8 +37,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //Bind
         holder.movieTitle.setText(movies.get(position).getTitle());
-        holder.actors.setText(movies.get(position).getCrew());
-        Picasso.get().load(movies.get(position).getImage()).into(holder.movieCoverImage);
+        holder.imdbRating.setText(movies.get(position).getImDbRating());
+        Picasso.get().load(movies.get(position).getImage()).fit().centerCrop().into(holder.movieCoverImage);
 
     }
 
@@ -48,14 +48,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView movieTitle, actors;
+        TextView movieTitle, imdbRating;
         ImageView movieCoverImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             movieTitle = itemView.findViewById(R.id.movieTitle);
-            actors = itemView.findViewById(R.id.Actors);
+            imdbRating = itemView.findViewById(R.id.Ratings);
             movieCoverImage = itemView.findViewById(R.id.coverImage);
 
         }
