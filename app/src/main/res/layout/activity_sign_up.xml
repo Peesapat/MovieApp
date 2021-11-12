@@ -138,9 +138,9 @@
         android:background="@drawable/bg_button_signin2"
         android:fontFamily="@font/roboto"
         android:text="Sign Up"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -99,7 +99,7 @@
         android:background="@drawable/bg_button_signin2"
         android:fontFamily="@font/roboto"
         android:text="Sign In"
-        android:textColor="#000000"
+        android:textColor="#fff"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

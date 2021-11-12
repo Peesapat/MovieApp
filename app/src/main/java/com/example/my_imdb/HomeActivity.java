@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +17,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.firebase.auth.FirebaseAuth;
+import com.bumptech.glide.request.RequestOptions;
+import com.glide.slider.library.SliderLayout;
+import com.glide.slider.library.animations.DescriptionAnimation;
+import com.glide.slider.library.slidertypes.BaseSliderView;
+import com.glide.slider.library.slidertypes.TextSliderView;
+import com.glide.slider.library.tricks.ViewPagerEx;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,22 +31,44 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
+    private SliderLayout PosterSlider;
+    ArrayList<String> listUrl;
+    ArrayList<String> listName;
+    ArrayList<String> listId;
 
-    RecyclerView recyclerView;
+    RecyclerView recyclerViewTrendingList;
+    List<Movie> trending;
+    MovieListAdapter trendingAdapter;
+
+    RecyclerView recyclerViewMovieList;
     List<Movie> movies;
     MovieListAdapter movieAdapter;
-    private static String JSON_URL = "https://imdb-api.com/en/API/Top250Movies/k_k0ep63j0";
+
+    RecyclerView recyclerViewTvSeriesList;
+    List<Movie> tvSeries;
+    MovieListAdapter tvSeriesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        recyclerView = findViewById(R.id.movieList);
+        PosterSlider = findViewById(R.id.slider);
+        extractPoster();
+
+        recyclerViewTrendingList = findViewById(R.id.trendingList);
+        trending = new ArrayList<>();
+        extractTrending();
+
+        recyclerViewMovieList = findViewById(R.id.movieList);
         movies = new ArrayList<>();
         extractMovies();
+
+        recyclerViewTvSeriesList = findViewById(R.id.tvSeriesList);
+        tvSeries = new ArrayList<>();
+        extractTvSeries();
 
         //Bottom Navigator
         LinearLayout homeBtn = findViewById(R.id.bottomNav1);
@@ -57,21 +84,106 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bottomNav5:
-                startActivity( new Intent(this, ProfileActivity.class));
+                startActivity(new Intent(this, ProfileActivity.class));
                 overridePendingTransition(0, 0);
         }
     }
 
+    @Override
+    protected void onStop() {
+        // To prevent a memory leak on rotation, make sure to call stopAutoCycle() on the slider before activity or fragment is destroyed
+        PosterSlider.stopAutoCycle();
+        super.onStop();
+    }
 
+    private void extractPoster() {
 
-    private void extractMovies() {
-        Log.d("dbug", "here: ");
+        listUrl = new ArrayList<>();
+        listName = new ArrayList<>();
+        listId = new ArrayList<>();
+
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, JSON_URL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.themoviedb.org/3/movie/now_playing?api_key=9e1c6b9dc63ee73be745dbc21b241e65", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray Jarray = response.getJSONArray("items");
+                    JSONArray Jarray = response.getJSONArray("results");
+//                    Log.d("dbug", "Jarray: " + Jarray);
+
+                    for (int i = 0; i < 4; i++) {
+                        try {
+                            JSONObject movieObject = Jarray.getJSONObject(i);
+                            listUrl.add("https://www.themoviedb.org/t/p/w1920_and_h800_multi_faces" + movieObject.getString("backdrop_path").toString());
+                            listName.add(movieObject.getString("title").toString() + " (" + movieObject.getString("release_date").toString().substring(0, 4) + ")");
+                            listId.add(movieObject.getString("id").toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+//                            Log.d("dbug", "movie: " + e);
+                        }
+                    }
+                    setPosterImg();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("dbug", "onErrorResponse: " + error.getMessage());
+            }
+        });
+        queue.add(jsonObjectRequest);
+
+
+    }
+
+    private void setPosterImg() {
+//        Log.d("dbug", "poster" + listUrl);
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.centerCrop();
+        //.diskCacheStrategy(DiskCacheStrategy.NONE)
+        //.placeholder(R.drawable.placeholder)
+        //.error(R.drawable.placeholder);
+
+        for (int i = 0; i < listUrl.size(); i++) {
+            TextSliderView sliderView = new TextSliderView(this);
+            // if you want show image only / without description text use DefaultSliderView  instead
+
+            // initialize SliderLayout
+            sliderView
+                    .image(listUrl.get(i))
+                    .setRequestOption(requestOptions)
+                    .setProgressBarVisible(true)
+                    .setOnSliderClickListener(this)
+                    .description(listName.get(i));
+
+            //add your extra information
+            sliderView.bundle(new Bundle());
+            sliderView.getBundle().putString("extra_name", listName.get(i));
+            sliderView.getBundle().putString("extra_id", listId.get(i));
+//            Log.d("dbug","poster:"+sliderView);
+            PosterSlider.addSlider(sliderView);
+        }
+        // set Slider Transition Animation
+        // PosterSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+        PosterSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        PosterSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        PosterSlider.setCustomAnimation(new DescriptionAnimation());
+        PosterSlider.setDuration(4000);
+        PosterSlider.addOnPageChangeListener(this);
+    }
+
+    private void extractTrending() {
+//        Log.d("dbug", "here: ");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.themoviedb.org/3/trending/all/day?api_key=9e1c6b9dc63ee73be745dbc21b241e65", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray Jarray = response.getJSONArray("results");
 //                    Log.d("dbug", "Jarray: " + Jarray);
 
 
@@ -80,19 +192,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             JSONObject movieObject = Jarray.getJSONObject(i);
                             Movie movie = new Movie();
-                            movie.setTitle(movieObject.getString("fullTitle").toString());
-                            movie.setImDbRating(movieObject.getString("imDbRating").toString());
-                            movie.setImage(movieObject.getString("image").toString());
-                            movies.add(movie);
-
+                            movie.setTitle(movieObject.getString("title").toString() + " (" + movieObject.getString("release_date").toString().substring(0, 4) + ")");
+                            movie.setImDbRating(movieObject.getString("vote_average").toString());
+                            movie.setImage("https://image.tmdb.org/t/p/w185" + movieObject.getString("poster_path").toString());
+                            trending.add(movie);
+//                            Log.d("dbug", "movie: " + movie);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+//                            Log.d("dbug", "movie: " + e);
                         }
 
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
-                        movieAdapter = new MovieListAdapter(getApplicationContext(), movies);
-                        recyclerView.setAdapter(movieAdapter);
+                        recyclerViewTrendingList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+                        trendingAdapter = new MovieListAdapter(getApplicationContext(), trending);
+                        recyclerViewTrendingList.setAdapter(trendingAdapter);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -108,4 +221,116 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         queue.add(jsonObjectRequest);
     }
 
+    private void extractMovies() {
+        Log.d("dbug", "here: ");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.themoviedb.org/3/movie/top_rated?api_key=9e1c6b9dc63ee73be745dbc21b241e65", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray Jarray = response.getJSONArray("results");
+//                    Log.d("dbug", "Jarray: " + Jarray);
+
+
+                    for (int i = 4; i < Jarray.length(); i++) {
+
+                        try {
+                            JSONObject movieObject = Jarray.getJSONObject(i);
+                            Movie movie = new Movie();
+                            movie.setTitle(movieObject.getString("title").toString() + " (" + movieObject.getString("release_date").toString().substring(0, 4) + ")");
+                            movie.setImDbRating(movieObject.getString("vote_average").toString());
+                            movie.setImage("https://image.tmdb.org/t/p/w185" + movieObject.getString("poster_path").toString());
+                            movies.add(movie);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+//                            Log.d("dbug", "movie: " + e);
+                        }
+
+                        recyclerViewMovieList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+                        movieAdapter = new MovieListAdapter(getApplicationContext(), movies);
+                        recyclerViewMovieList.setAdapter(movieAdapter);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("dbug", "onErrorResponse: " + error.getMessage());
+            }
+        });
+
+        queue.add(jsonObjectRequest);
+    }
+
+    private void extractTvSeries() {
+        Log.d("dbug", "here: ");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.themoviedb.org/3/tv/popular?api_key=9e1c6b9dc63ee73be745dbc21b241e65", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray Jarray = response.getJSONArray("results");
+//                    Log.d("dbug", "Jarray: " + Jarray);
+
+
+                    for (int i = 0; i < Jarray.length(); i++) {
+
+                        try {
+                            JSONObject movieObject = Jarray.getJSONObject(i);
+                            Movie movie = new Movie();
+                            movie.setTitle(movieObject.getString("name").toString() + " (" + movieObject.getString("first_air_date").toString().substring(0, 4) + ")");
+                            movie.setImDbRating(movieObject.getString("vote_average").toString());
+                            movie.setImage("https://image.tmdb.org/t/p/w185" + movieObject.getString("poster_path").toString());
+                            tvSeries.add(movie);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+//                            Log.d("dbug", "movie: " + e);
+                        }
+
+                        recyclerViewTvSeriesList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+                        tvSeriesAdapter = new MovieListAdapter(getApplicationContext(), tvSeries);
+                        recyclerViewTvSeriesList.setAdapter(tvSeriesAdapter);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("dbug", "onErrorResponse: " + error.getMessage());
+            }
+        });
+
+        queue.add(jsonObjectRequest);
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+        Toast.makeText(this, slider.getBundle().getString("extra_id") + "", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
 }
