@@ -31,13 +31,24 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signOutButton:
                 SignOut();
             case R.id.bottomNav1:
-                startActivity( new Intent(this, MainActivity.class));
+                Intent i = new Intent(this,MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+//                startActivity( new Intent(this, MainActivity.class));
         }
     }
 

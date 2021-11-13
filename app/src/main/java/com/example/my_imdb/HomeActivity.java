@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
+public class HomeActivity extends AppCompatActivity implements MovieListAdapter.RecyclerViewClickListener, View.OnClickListener, BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout PosterSlider;
     ArrayList<String> listUrl;
@@ -61,14 +61,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         recyclerViewTrendingList = findViewById(R.id.trendingList);
         trending = new ArrayList<>();
         extractTrending();
+        recyclerViewTrendingList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        trendingAdapter = new MovieListAdapter(getApplicationContext(), trending, this);
+        recyclerViewTrendingList.setAdapter(trendingAdapter);
 
         recyclerViewMovieList = findViewById(R.id.movieList);
         movies = new ArrayList<>();
         extractMovies();
+        recyclerViewMovieList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        movieAdapter = new MovieListAdapter(getApplicationContext(), movies, this);
+        recyclerViewMovieList.setAdapter(movieAdapter);
 
         recyclerViewTvSeriesList = findViewById(R.id.tvSeriesList);
         tvSeries = new ArrayList<>();
         extractTvSeries();
+        recyclerViewTvSeriesList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        tvSeriesAdapter = new MovieListAdapter(getApplicationContext(), tvSeries, this);
+        recyclerViewTvSeriesList.setAdapter(tvSeriesAdapter);
 
         //Bottom Navigator
         LinearLayout homeBtn = findViewById(R.id.bottomNav1);
@@ -79,14 +88,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bottomNav5:
-                startActivity(new Intent(this, ProfileActivity.class));
+                Intent i = new Intent(this, ProfileActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+//                startActivity(new Intent(this, ProfileActivity.class));
         }
+    }
+
+    @Override
+    public void onRecyclerClick(String val) {
+//        Log.d("dbug", "onRecyclerClick: "+val);
+        Intent i = new Intent(this, FullMovieActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        overridePendingTransition(0, 0);
+        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        i.putExtra("key_id", val);
+        startActivity(i);
     }
 
     @Override
@@ -192,6 +218,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             JSONObject movieObject = Jarray.getJSONObject(i);
                             Movie movie = new Movie();
+                            movie.setMovieId(movieObject.getString("id").toString());
                             movie.setTitle(movieObject.getString("title").toString() + " (" + movieObject.getString("release_date").toString().substring(0, 4) + ")");
                             movie.setImDbRating(movieObject.getString("vote_average").toString());
                             movie.setImage("https://image.tmdb.org/t/p/w185" + movieObject.getString("poster_path").toString());
@@ -202,10 +229,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             e.printStackTrace();
 //                            Log.d("dbug", "movie: " + e);
                         }
-
-                        recyclerViewTrendingList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
-                        trendingAdapter = new MovieListAdapter(getApplicationContext(), trending);
-                        recyclerViewTrendingList.setAdapter(trendingAdapter);
+//                        recyclerViewTrendingList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+//                        trendingAdapter = new MovieListAdapter(getApplicationContext(), trending, globalThis);
+//                        recyclerViewTrendingList.setAdapter(trendingAdapter);
+                        trendingAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -237,6 +264,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             JSONObject movieObject = Jarray.getJSONObject(i);
                             Movie movie = new Movie();
+                            movie.setMovieId(movieObject.getString("id").toString());
                             movie.setTitle(movieObject.getString("title").toString() + " (" + movieObject.getString("release_date").toString().substring(0, 4) + ")");
                             movie.setImDbRating(movieObject.getString("vote_average").toString());
                             movie.setImage("https://image.tmdb.org/t/p/w185" + movieObject.getString("poster_path").toString());
@@ -246,10 +274,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             e.printStackTrace();
 //                            Log.d("dbug", "movie: " + e);
                         }
+//                        recyclerViewMovieList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+//                        movieAdapter = new MovieListAdapter(getApplicationContext(), movies, this);
+//                        recyclerViewMovieList.setAdapter(movieAdapter);
+                        movieAdapter.notifyDataSetChanged();
 
-                        recyclerViewMovieList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
-                        movieAdapter = new MovieListAdapter(getApplicationContext(), movies);
-                        recyclerViewMovieList.setAdapter(movieAdapter);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -281,6 +310,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             JSONObject movieObject = Jarray.getJSONObject(i);
                             Movie movie = new Movie();
+                            movie.setMovieId("tv" + movieObject.getString("id").toString());
                             movie.setTitle(movieObject.getString("name").toString() + " (" + movieObject.getString("first_air_date").toString().substring(0, 4) + ")");
                             movie.setImDbRating(movieObject.getString("vote_average").toString());
                             movie.setImage("https://image.tmdb.org/t/p/w185" + movieObject.getString("poster_path").toString());
@@ -290,10 +320,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             e.printStackTrace();
 //                            Log.d("dbug", "movie: " + e);
                         }
-
-                        recyclerViewTvSeriesList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
-                        tvSeriesAdapter = new MovieListAdapter(getApplicationContext(), tvSeries);
-                        recyclerViewTvSeriesList.setAdapter(tvSeriesAdapter);
+//                        recyclerViewTvSeriesList.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+//                        tvSeriesAdapter = new MovieListAdapter(getApplicationContext(), tvSeries, globalThis);
+//                        recyclerViewTvSeriesList.setAdapter(tvSeriesAdapter);
+                        tvSeriesAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -333,4 +363,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onPageScrollStateChanged(int state) {
 
     }
+
 }

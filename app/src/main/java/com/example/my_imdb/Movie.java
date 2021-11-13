@@ -2,7 +2,7 @@ package com.example.my_imdb;
 
 public class Movie {
 
-    private String id;
+    private String movie_id;
     private String title;
     private String year;
     private String image;
@@ -13,8 +13,8 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(String id, String title, String year, String image, String crew, String imDbRating) {
-        this.id = id;
+    public Movie(String movie_id, String title, String year, String image, String crew, String imDbRating) {
+        this.movie_id = movie_id;
         this.title = title;
         this.year = year;
         this.image = image;
@@ -22,12 +22,12 @@ public class Movie {
         this.imDbRating = imDbRating;
     }
 
-    public String getId() {
-        return id;
+    public String getMovieId() {
+        return movie_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMovieId(String movie_id) {
+        this.movie_id = movie_id;
     }
 
     public String getTitle() {

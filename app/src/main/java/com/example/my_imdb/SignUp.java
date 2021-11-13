@@ -87,7 +87,11 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
         Intent i;
         switch (v.getId()){
             case R.id.signupbtn: signupbtn();break;
-            case R.id.signintv1: i = new Intent(this,SignIn.class);startActivity(i);break;
+            case R.id.signintv1:
+                i = new Intent(this,HomeActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);break;
         }
     }
 
