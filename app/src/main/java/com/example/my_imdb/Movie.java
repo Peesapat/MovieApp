@@ -10,16 +10,20 @@ public class Movie {
     private String imDbRating;
 
 
+    private String type;
+
+
     public Movie() {
     }
 
-    public Movie(String movie_id, String title, String year, String image, String crew, String imDbRating) {
+    public Movie(String movie_id, String title, String year, String image, String crew, String imDbRating, String type) {
         this.movie_id = movie_id;
         this.title = title;
         this.year = year;
         this.image = image;
         this.crew = crew;
         this.imDbRating = imDbRating;
+        this.type = type;
     }
 
     public String getMovieId() {
@@ -68,5 +72,13 @@ public class Movie {
 
     public void setImDbRating(String imDbRating) {
         this.imDbRating = imDbRating;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

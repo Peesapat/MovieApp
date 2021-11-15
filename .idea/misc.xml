@@ -26,11 +26,13 @@
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_full_movie.xml" value="0.25" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_home.xml" value="0.22" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_main.xml" value="0.24048913043478262" />
-        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_profile.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_profile.xml" value="0.33" />
+        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_search.xml" value="0.2" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_sign_in.xml" value="0.22" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/activity_sign_up.xml" value="0.33" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/bottom_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/fragment_movie_cardview.xml" value="0.22453703703703703" />
+        <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/fragment_search_movie.xml" value="0.22" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/movie_card.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/layout/movie_cardview.xml" value="0.67" />
         <entry key="..\:/Users/OWNER/Documents/Android Studio/My_IMDB/app/src/main/res/menu/bottom_menu.xml" value="0.36666666666666664" />

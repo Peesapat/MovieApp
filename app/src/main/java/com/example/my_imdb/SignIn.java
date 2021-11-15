@@ -100,21 +100,20 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
 
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    if(user.isEmailVerified()){
-                        //redirect user to home
-                        Intent i = new Intent(SignIn.this,HomeActivity.class);
+                    if (user.isEmailVerified()) {
+                        //redirect userF to home
+                        Intent i = new Intent(SignIn.this, HomeActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
 //                        startActivity(new Intent(SignIn.this,HomeActivity.class));
-                    }
-                    else{
+                    } else {
                         user.sendEmailVerification();
-                        Toast.makeText(SignIn.this,"Check your email to verify your account!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignIn.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
                     }
                 }
                 else {

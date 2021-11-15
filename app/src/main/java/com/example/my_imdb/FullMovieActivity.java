@@ -31,6 +31,7 @@ import java.util.List;
 public class FullMovieActivity extends AppCompatActivity implements View.OnClickListener {
 
     String key_id;
+    String from_class;
     String type;
 
     @Override
@@ -41,6 +42,7 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             key_id = extras.getString("key_id");
+            from_class = extras.getString("from");
 //            Log.d("dbug", "key: " + key_id);
             if (key_id.substring(0, 2).equals("tv")) {
                 type = "tv";
@@ -63,9 +65,14 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
+        Intent i;
         switch (v.getId()) {
             case R.id.backButton:
-                Intent i = new Intent(this, MainActivity.class);
+                if (from_class.equals("HomeActivity.class")) {
+                    i = new Intent(this, HomeActivity.class);
+                } else {
+                    i = new Intent(this, SearchActivity.class);
+                }
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
@@ -87,52 +94,83 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
                     Picasso.get().load("https://www.themoviedb.org/t/p/w1920_and_h800_multi_faces" + response.getString("backdrop_path")).fit().centerCrop().into(backdropImageView);
 
                     ImageView posterImageView = findViewById(R.id.posterImageView);
-                    Picasso.get().load("https://image.tmdb.org/t/p/w185" + response.getString("poster_path")).fit().centerCrop().into(posterImageView);
-
-                    TextView fullMovieTitle = findViewById(R.id.fullMovieTitle);
-                    if (type.equals("tv")) {
-                        fullMovieTitle.setText(response.getString("name") + " (" + response.getString("first_air_date").substring(0, 4) + ")");
-                        if (response.getString("name").length() <= 17) {
-                            fullMovieTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+                    try {
+                        if (response.getString("poster_path").toString().equals("null")) {
+                            Picasso.get().load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSNUolEReqL0k9etUdLqyqr_yhlYYleykCwdmIEs1DteHxkZiWZ6xUSVGewMAFAf9JhYg&usqp=CAU");
+                        } else {
+                            Picasso.get().load("https://image.tmdb.org/t/p/w185" + response.getString("poster_path")).fit().centerCrop().into(posterImageView);
                         }
-                    } else {
-                        fullMovieTitle.setText(response.getString("title") + " (" + response.getString("release_date").substring(0, 4) + ")");
-                        if (response.getString("title").length() <= 17) {
-                            fullMovieTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-                        }
+                    } catch (JSONException e) {
+                        Picasso.get().load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSNUolEReqL0k9etUdLqyqr_yhlYYleykCwdmIEs1DteHxkZiWZ6xUSVGewMAFAf9JhYg&usqp=CAU");
                     }
 
+                    TextView fullMovieTitle = findViewById(R.id.fullMovieTitle);
+                    try {
+                        if (type.equals("tv")) {
+                            fullMovieTitle.setText(response.getString("name"));
+                            if (response.getString("name").length() <= 17) {
+                                fullMovieTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+                            }
+                        } else {
+                            fullMovieTitle.setText(response.getString("title"));
+                            if (response.getString("title").length() <= 17) {
+                                fullMovieTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        fullMovieTitle.setText("-");
+                    }
 
                     TextView releaseDate = findViewById(R.id.releaseDate);
-                    if (type.equals("tv")) {
-                        releaseDate.setText(response.getString("first_air_date"));
-                    } else {
-                        releaseDate.setText(response.getString("release_date"));
+                    try {
+                        if (type.equals("tv")) {
+                            releaseDate.setText(response.getString("first_air_date"));
+                        } else {
+                            releaseDate.setText(response.getString("release_date"));
+                        }
+                    } catch (JSONException e) {
+                        releaseDate.setText("-");
                     }
 
                     TextView duration = findViewById(R.id.duration);
-                    if (type.equals("tv")) {
-                        duration.setText(response.getJSONArray("episode_run_time").get(0).toString() + " min");
-                    } else {
-                        duration.setText(response.getString("runtime") + " min");
+                    try {
+                        if (type.equals("tv")) {
+                            duration.setText(response.getJSONArray("episode_run_time").get(0).toString() + " min");
+                        } else {
+                            duration.setText(response.getString("runtime") + " min");
+                        }
+                    } catch (JSONException e) {
+                        duration.setText("-");
                     }
 
                     TextView genre = findViewById(R.id.genre);
-                    if (response.getJSONArray("genres").length() == 0) {
-                        genre.setText("-");
-                    } else {
-                        try {
-                            genre.setText(response.getJSONArray("genres").getJSONObject(0).getString("name") + ", " + response.getJSONArray("genres").getJSONObject(1).getString("name"));
-                        } catch (JSONException e) {
-                            genre.setText(response.getJSONArray("genres").getJSONObject(0).getString("name"));
+                    try {
+                        if (response.getJSONArray("genres").length() == 0) {
+                            genre.setText("-");
+                        } else {
+                            try {
+                                genre.setText(response.getJSONArray("genres").getJSONObject(0).getString("name") + ", " + response.getJSONArray("genres").getJSONObject(1).getString("name"));
+                            } catch (JSONException e) {
+                                genre.setText(response.getJSONArray("genres").getJSONObject(0).getString("name"));
+                            }
                         }
+                    } catch (JSONException e) {
+                        genre.setText("-");
                     }
 
                     TextView ratings = findViewById(R.id.ratings);
-                    ratings.setText(response.getString("vote_average"));
+                    try {
+                        ratings.setText(response.getString("vote_average"));
+                    } catch (JSONException e) {
+                        ratings.setText("-");
+                    }
 
                     TextView overviewText = findViewById(R.id.overviewText);
-                    overviewText.setText(response.getString("overview"));
+                    try {
+                        overviewText.setText(response.getString("overview"));
+                    } catch (JSONException e) {
+                        overviewText.setText("-");
+                    }
 
                     TextView budget = findViewById(R.id.budget);
                     try {

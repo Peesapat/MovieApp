@@ -3,6 +3,7 @@ package com.example.my_imdb;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -17,11 +18,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener{
 
@@ -85,13 +92,16 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         Intent i;
-        switch (v.getId()){
-            case R.id.signupbtn: signupbtn();break;
+        switch (v.getId()) {
+            case R.id.signupbtn:
+                signupbtn();
+                break;
             case R.id.signintv1:
-                i = new Intent(this,HomeActivity.class);
+                i = new Intent(this, HomeActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);break;
+                startActivity(i);
+                break;
         }
     }
 
@@ -150,12 +160,37 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
-                            if(task.isSuccessful()){
-                                Toast.makeText(SignUp.this,"User has been registered successfully",Toast.LENGTH_LONG).show();
-                                progressBar.setVisibility(View.GONE);
-                            }
-                            else{
-                                Toast.makeText(SignUp.this,"Failed to register! Try again!",Toast.LENGTH_LONG).show();
+                            if (task.isSuccessful()) {
+
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                Map<String, Object> userF = new HashMap<>();
+                                userF.put("name", name);
+                                userF.put("email", email);
+                                userF.put("watch_int", 0);
+                                userF.put("profile", "https://i.pinimg.com/236x/53/26/7c/53267cf194e6435f6137a3e99c7cbcfc.jpg");
+
+                                // Add a new document with a generated ID
+                                db.collection("users")
+                                        .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .set(userF)
+                                        .addOnSuccessListener(new OnSuccessListener() {
+                                            @Override
+                                            public void onSuccess(Object o) {
+//                                                Log.d("dbug", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                                                Log.d("dbug", "DocumentSnapshot added with ID: " +  o);
+                                                Toast.makeText(SignUp.this, "User has been registered successfully", Toast.LENGTH_LONG).show();
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("dbug", "Error adding document", e);
+                                            }
+                                        });
+
+                            } else {
+                                Toast.makeText(SignUp.this, "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
                             }
                         }

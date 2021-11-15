@@ -82,6 +82,8 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
         //Bottom Navigator
         LinearLayout homeBtn = findViewById(R.id.bottomNav1);
         homeBtn.setOnClickListener(this);
+        LinearLayout searchBtn = findViewById(R.id.bottomNav3);
+        searchBtn.setOnClickListener(this);
         LinearLayout profileBtn = findViewById(R.id.bottomNav5);
         profileBtn.setOnClickListener(this);
 
@@ -90,14 +92,25 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
 
     @Override
     public void onClick(View v) {
+        Intent i;
         switch (v.getId()) {
-            case R.id.bottomNav5:
-                Intent i = new Intent(this, ProfileActivity.class);
+            case R.id.bottomNav3:
+                i = new Intent(this, SearchActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
+                break;
+//                startActivity(new Intent(this, ProfileActivity.class));
+            case R.id.bottomNav5:
+                i = new Intent(this, ProfileActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
 //                startActivity(new Intent(this, ProfileActivity.class));
         }
     }
@@ -112,6 +125,7 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
         i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         i.putExtra("key_id", val);
+        i.putExtra("from", "HomeActivity.class");
         startActivity(i);
     }
 

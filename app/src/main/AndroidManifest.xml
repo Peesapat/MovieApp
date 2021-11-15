@@ -29,9 +29,13 @@
             android:exported="false"
             android:launchMode="singleTask"/>
         <activity
-            android:name=".ProfileActivity"
+            android:name=".SearchActivity"
             android:exported="false"
             android:launchMode="singleTask"/>
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

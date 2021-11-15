@@ -1,111 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#181819">
-
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:text="Profile"
-        android:textColor="#fff"
-        android:textSize="45dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/signOutButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="18dp"
-        android:text="sign out"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:layout_constraintVertical_bias="1.0" />
-
+    android:background="#181819"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginStart="4dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/signOutButton"
+        android:layout_height="0dp"
+        android:background="#181819"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:layout_constraintVertical_bias="0.047">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="3">
+            android:layout_marginHorizontal="5dp"
+            android:text="Search"
+            android:textColor="#fff"
+            android:textSize="45dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                app:cardCornerRadius="45dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="10dp"
+                android:layout_weight="8"
+                android:elevation="10dp"
+                app:cardCornerRadius="10dp"
+
+                android:background="#ECECEC">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:hint="Search Title"
+                    app:endIconMode="clear_text">
+
+                    <EditText
+                        android:id="@+id/searchInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#ECECEC"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
                 <ImageView
-                    android:id="@+id/profileImg"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    tools:srcCompat="@tools:sample/avatars" />
-            </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/searchTrigger"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="#212123"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_search" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/nameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Name"
-                android:layout_marginTop="5dp"
-                android:textColor="#fff"
-                android:textColorHint="#fff"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/emailTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Email"
-                android:layout_marginTop="5dp"
-                android:textColor="#FFBCBCBC"
-                android:textColorHint="#FFBCBCBC"
-                android:textSize="16dp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layoutSearchRV"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="#212123"
         android:orientation="horizontal"
+        android:translationZ="99dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
@@ -176,7 +174,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="#212123"
-                app:srcCompat="@drawable/ic_search2" />
+                app:srcCompat="@drawable/ic_search" />
 
             <TextView
                 android:id="@+id/textSearch"
@@ -185,7 +183,7 @@
                 android:layout_weight="1.6"
                 android:text="Search"
                 android:textAlignment="center"
-                android:textColor="#818181"
+                android:textColor="#fff"
                 android:textSize="10dp" />
         </LinearLayout>
 
@@ -230,7 +228,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="#212123"
-                app:srcCompat="@drawable/ic_profile" />
+                app:srcCompat="@drawable/ic_profile2" />
 
             <TextView
                 android:id="@+id/textProfile"
@@ -239,7 +237,7 @@
                 android:layout_weight="1.6"
                 android:text="Profile"
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="#818181"
                 android:textSize="10dp" />
         </LinearLayout>
 

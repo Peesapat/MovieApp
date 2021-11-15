@@ -28,7 +28,7 @@
                 android:layout_marginHorizontal="5dp"
                 android:text="Home"
                 android:textColor="#fff"
-                android:textSize="50dp" />
+                android:textSize="45dp" />
 
             <!--Poster Slider-->
             <com.glide.slider.library.SliderLayout
