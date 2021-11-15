@@ -249,7 +249,7 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
     private void extractMovies() {
-        Log.d("dbug", "here: ");
+//        Log.d("dbug", "here: ");
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.themoviedb.org/3/movie/top_rated?api_key=9e1c6b9dc63ee73be745dbc21b241e65", null, new Response.Listener<JSONObject>() {
             @Override
@@ -295,7 +295,7 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
     private void extractTvSeries() {
-        Log.d("dbug", "here: ");
+//        Log.d("dbug", "here: ");
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://api.themoviedb.org/3/tv/popular?api_key=9e1c6b9dc63ee73be745dbc21b241e65", null, new Response.Listener<JSONObject>() {
             @Override
@@ -341,7 +341,15 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
 
     @Override
     public void onSliderClick(BaseSliderView slider) {
-        Toast.makeText(this, slider.getBundle().getString("extra_id") + "", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, slider.getBundle().getString("extra_id") + "", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, FullMovieActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        overridePendingTransition(0, 0);
+        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        i.putExtra("key_id", slider.getBundle().getString("extra_id"));
+        startActivity(i);
     }
 
     @Override
