@@ -57,6 +57,8 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         //Bottom Navigator
         LinearLayout homeBtn = findViewById(R.id.bottomNav1);
         homeBtn.setOnClickListener(this);
+        LinearLayout watchlistBtn = findViewById(R.id.bottomNav4);
+        watchlistBtn.setOnClickListener(this);
         LinearLayout profileBtn = findViewById(R.id.bottomNav5);
         profileBtn.setOnClickListener(this);
     }
@@ -71,6 +73,15 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
                 break;
             case R.id.bottomNav1:
                 i = new Intent(this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//                startActivity( new Intent(this, MainActivity.class));
+            case R.id.bottomNav4:
+                i = new Intent(this, WatchlistActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);

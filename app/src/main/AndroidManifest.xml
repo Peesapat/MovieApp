@@ -23,15 +23,19 @@
         <activity
             android:name=".HomeActivity"
             android:exported="false"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
         <activity
             android:name=".FullMovieActivity"
             android:exported="false"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
         <activity
             android:name=".SearchActivity"
             android:exported="false"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".WatchlistActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false"

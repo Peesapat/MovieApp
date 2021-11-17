@@ -84,6 +84,8 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
         homeBtn.setOnClickListener(this);
         LinearLayout searchBtn = findViewById(R.id.bottomNav3);
         searchBtn.setOnClickListener(this);
+        LinearLayout watchlistBtn = findViewById(R.id.bottomNav4);
+        watchlistBtn.setOnClickListener(this);
         LinearLayout profileBtn = findViewById(R.id.bottomNav5);
         profileBtn.setOnClickListener(this);
 
@@ -96,6 +98,15 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
         switch (v.getId()) {
             case R.id.bottomNav3:
                 i = new Intent(this, SearchActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//                startActivity(new Intent(this, ProfileActivity.class));
+            case R.id.bottomNav4:
+                i = new Intent(this, WatchlistActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);

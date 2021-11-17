@@ -43,7 +43,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     public void onBindViewHolder(@NonNull SearchListAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         //Bind
         holder.movieTitle.setText(movies.get(position).getTitle());
-        holder.movieTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 9);
         holder.releaseDate.setText(movies.get(position).getYear());
         holder.type.setText(movies.get(position).getType());
         holder.imdbRating.setText(movies.get(position).getImDbRating());

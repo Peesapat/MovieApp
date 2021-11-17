@@ -67,8 +67,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         homeBtn.setOnClickListener(this);
         LinearLayout searchBtn = findViewById(R.id.bottomNav3);
         searchBtn.setOnClickListener(this);
-        LinearLayout profileBtn = findViewById(R.id.bottomNav5);
-        profileBtn.setOnClickListener(this);
+        LinearLayout watchlistBtn = findViewById(R.id.bottomNav4);
+        watchlistBtn.setOnClickListener(this);
 
     }
 
@@ -103,6 +103,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(i);
                 break;
 //                startActivity( new Intent(this, MainActivity.class));
+            case R.id.bottomNav4:
+                i = new Intent(this, WatchlistActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//            startActivity( new Intent(this, MainActivity.class));
         }
     }
 

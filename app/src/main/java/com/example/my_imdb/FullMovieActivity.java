@@ -1,15 +1,22 @@
 package com.example.my_imdb;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,6 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -26,13 +41,20 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FullMovieActivity extends AppCompatActivity implements View.OnClickListener {
 
     String key_id;
     String from_class;
     String type;
+
+    CardView watchlistCardView;
+    ImageButton watchlistButton;
+    CardView rankCardView;
+    ImageButton rankButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +78,16 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
 
             fetchDataActors();
             fetchData();
+            fetchWatchlistAndRank();
 
+            watchlistCardView = findViewById(R.id.watchlistCardView);
+            watchlistButton = findViewById(R.id.watchlistButton);
+            watchlistButton.setOnClickListener(this);
 
+            rankCardView = findViewById(R.id.rankCardView);
+            rankButton = findViewById(R.id.rankButton);
+            rankButton.setOnClickListener(this);
         }
-
 
     }
 
@@ -70,14 +98,43 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
             case R.id.backButton:
                 if (from_class.equals("HomeActivity.class")) {
                     i = new Intent(this, HomeActivity.class);
-                } else {
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    overridePendingTransition(0, 0);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                    break;
+                } else if (from_class.equals("SearchActivity.class")) {
                     i = new Intent(this, SearchActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    overridePendingTransition(0, 0);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                    break;
+                } else if (from_class.equals("WatchlistActivity.class")) {
+                    i = new Intent(this, WatchlistActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    overridePendingTransition(0, 0);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                    break;
+                } else{
+                    i = new Intent(this, HomeActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    overridePendingTransition(0, 0);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(i);
+                    break;
                 }
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                overridePendingTransition(0, 0);
-                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(i);
+            case R.id.watchlistButton:
+                addToWatchlist();
+                break;
+            case R.id.rankButton:
+                addRank();
+                break;
         }
     }
 
@@ -209,7 +266,7 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("dbug", "onErrorResponse: " + error.getMessage());
+                Log.d("dbug", "onErrorResponse1: " + error.getMessage());
             }
         });
         queue.add(jsonObjectRequest);
@@ -261,10 +318,173 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("dbug", "onErrorResponse: " + error.getMessage());
+                Log.d("dbug", "onErrorResponse2: " + error.getMessage());
             }
         });
         queue.add(jsonObjectRequest);
+    }
+
+    Boolean watched = false;
+    Boolean ranked = false;
+
+    public void fetchWatchlistAndRank() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .collection("watchlist")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.getId().equals(key_id)) {
+                                    watchlistCardView.setCardBackgroundColor(Color.parseColor("#636161"));
+                                    watched = true;
+                                }
+//                                Log.d("dbug", document.getId());
+                            }
+//                            Log.d("dbug", "" + watched);
+                        } else {
+                            Log.d("dbug", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        db.collection("users")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .collection("rank")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.getId().equals(key_id)) {
+                                    rankCardView.setCardBackgroundColor(Color.parseColor("#636161"));
+                                    ranked = true;
+                                }
+                                Log.d("dbug", document.getId());
+                            }
+                            Log.d("dbug", "" + ranked);
+                        } else {
+                            Log.d("dbug", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void addToWatchlist() {
+        Animation animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(200); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter
+        watchlistButton.startAnimation(animation);
+
+//        Log.d("dbug", "watchlist "+ type + key_id);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        if (watched) {
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .collection("watchlist")
+                    .document(key_id)
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            watched = false;
+                            watchlistCardView.setCardBackgroundColor(Color.parseColor("#FFFF4D40"));
+                            Toast.makeText(FullMovieActivity.this, "Removed from watchlist ", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("dbug", "Error adding watchlist", e);
+                        }
+                    });
+        } else {
+            Map<String, Object> watchlistId = new HashMap<>();
+            watchlistId.put("watchlist_key", key_id);
+            watchlistId.put("type", type);
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .collection("watchlist")
+                    .document(key_id)
+                    .set(watchlistId)
+                    .addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+//                                                Log.d("dbug", "DocumentSnapshot added with ID: " + documentReference.getId());
+                            watched = true;
+                            watchlistCardView.setCardBackgroundColor(Color.parseColor("#636161"));
+                            Toast.makeText(FullMovieActivity.this, "successfully added to watchlist ", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("dbug", "Error adding watchlist", e);
+                        }
+                    });
+        }
+
+    }
+
+    public void addRank() {
+        Animation animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(200); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter
+        rankButton.startAnimation(animation);
+
+//        Log.d("dbug", "watchlist "+ type + key_id);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        if (ranked) {
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .collection("rank")
+                    .document(key_id)
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            ranked = false;
+                            rankCardView.setCardBackgroundColor(Color.parseColor("#F1B400"));
+                            Toast.makeText(FullMovieActivity.this, "Removed from rank ", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("dbug", "Error adding rank1", e);
+                        }
+                    });
+        } else {
+            Map<String, Object> watchlistId = new HashMap<>();
+            watchlistId.put("watchlist_key", key_id);
+            watchlistId.put("type", type);
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .collection("rank")
+                    .document(key_id)
+                    .set(watchlistId)
+                    .addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+//                                                Log.d("dbug", "DocumentSnapshot added with ID: " + documentReference.getId());
+                            ranked = true;
+                            rankCardView.setCardBackgroundColor(Color.parseColor("#636161"));
+                            Toast.makeText(FullMovieActivity.this, "successfully added to rank2 ", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("dbug", "Error adding rank2", e);
+                        }
+                    });
+        }
     }
 
 }
