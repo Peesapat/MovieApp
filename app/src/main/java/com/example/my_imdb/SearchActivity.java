@@ -57,6 +57,8 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         //Bottom Navigator
         LinearLayout homeBtn = findViewById(R.id.bottomNav1);
         homeBtn.setOnClickListener(this);
+        LinearLayout rankBtn = findViewById(R.id.bottomNav2);
+        rankBtn.setOnClickListener(this);
         LinearLayout watchlistBtn = findViewById(R.id.bottomNav4);
         watchlistBtn.setOnClickListener(this);
         LinearLayout profileBtn = findViewById(R.id.bottomNav5);
@@ -67,14 +69,21 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
     public void onClick(View v) {
         Intent i;
         switch (v.getId()) {
-            case R.id.searchTrigger:
-                searchList.removeAll(searchList);
-                fetchSearch();
-                break;
             case R.id.bottomNav1:
                 i = new Intent(this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//                startActivity( new Intent(this, MainActivity.class));
+            case R.id.bottomNav2:
+                i = new Intent(this, RankActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -83,7 +92,8 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
             case R.id.bottomNav4:
                 i = new Intent(this, WatchlistActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -92,12 +102,17 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
             case R.id.bottomNav5:
                 i = new Intent(this, ProfileActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
                 break;
 //                startActivity( new Intent(this, MainActivity.class));
+            case R.id.searchTrigger:
+                searchList.removeAll(searchList);
+                fetchSearch();
+                break;
         }
     }
 
@@ -111,7 +126,7 @@ public class SearchActivity extends AppCompatActivity implements SearchListAdapt
         i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         i.putExtra("key_id", val);
-        i.putExtra("from", "ProfileActivity.class");
+        i.putExtra("from", "SearchActivity.class");
         startActivity(i);
     }
 

@@ -166,7 +166,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener{
                                 Map<String, Object> userF = new HashMap<>();
                                 userF.put("name", name);
                                 userF.put("email", email);
-                                userF.put("watch_int", 0);
+                                userF.put("rank_int", 0);
                                 userF.put("profile", "https://i.pinimg.com/236x/53/26/7c/53267cf194e6435f6137a3e99c7cbcfc.jpg");
 
                                 // Add a new document with a generated ID

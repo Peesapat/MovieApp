@@ -1,5 +1,7 @@
 package com.example.my_imdb;
 
+import static java.lang.Integer.parseInt;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -364,9 +367,9 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
                                     rankCardView.setCardBackgroundColor(Color.parseColor("#636161"));
                                     ranked = true;
                                 }
-                                Log.d("dbug", document.getId());
+//                                Log.d("dbug", document.getId());
                             }
-                            Log.d("dbug", "" + ranked);
+//                            Log.d("dbug", "" + ranked);
                         } else {
                             Log.d("dbug", "Error getting documents: ", task.getException());
                         }
@@ -405,7 +408,7 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
                     });
         } else {
             Map<String, Object> watchlistId = new HashMap<>();
-            watchlistId.put("watchlist_key", key_id);
+            watchlistId.put("movie_id", key_id);
             watchlistId.put("type", type);
             db.collection("users")
                     .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -430,6 +433,7 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
         }
 
     }
+
 
     public void addRank() {
         Animation animation = new AlphaAnimation((float) 0.5, 0); // Change alpha from fully visible to invisible
@@ -460,9 +464,45 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
                             Log.d("dbug", "Error adding rank1", e);
                         }
                     });
+
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+//                            Log.d("dbug", "DocumentSnapshot data: " + document.getData());
+
+                            Map<String, Object> userF = new HashMap<>();
+                            userF.put("rank_int", parseInt(document.getData().get("rank_int").toString())-1);
+                            db.collection("users")
+                                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userF)
+                                    .addOnSuccessListener(new OnSuccessListener() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            Log.d("dbug", "Successfully remove 1 rank ");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("dbug", "Error adding document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("dbug", "No such document");
+                        }
+                    } else {
+                        Log.d("dbug", "get failed with ", task.getException());
+                    }
+                }
+            });
+
         } else {
+
             Map<String, Object> watchlistId = new HashMap<>();
-            watchlistId.put("watchlist_key", key_id);
+            watchlistId.put("movie_id", key_id);
             watchlistId.put("type", type);
             db.collection("users")
                     .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -475,7 +515,7 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
 //                                                Log.d("dbug", "DocumentSnapshot added with ID: " + documentReference.getId());
                             ranked = true;
                             rankCardView.setCardBackgroundColor(Color.parseColor("#636161"));
-                            Toast.makeText(FullMovieActivity.this, "successfully added to rank2 ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FullMovieActivity.this, "successfully added to rank ", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -484,7 +524,44 @@ public class FullMovieActivity extends AppCompatActivity implements View.OnClick
                             Log.w("dbug", "Error adding rank2", e);
                         }
                     });
+
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+//                            Log.d("dbug", "DocumentSnapshot data: " + document.getData().get("rank_int"));
+
+                            Map<String, Object> userF = new HashMap<>();
+                            userF.put("rank_int", parseInt(document.getData().get("rank_int").toString())+1);
+                            db.collection("users")
+                                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).update(userF)
+                                    .addOnSuccessListener(new OnSuccessListener() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            Log.d("dbug", "Successfully added 1 rank ");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("dbug", "Error adding document", e);
+                                        }
+                                    });
+                        } else {
+                            Log.d("dbug", "No such document");
+                        }
+                    } else {
+                        Log.d("dbug", "get failed with ", task.getException());
+                    }
+                }
+            });
+
         }
     }
+
+
 
 }

@@ -65,6 +65,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         //Bottom Navigator
         LinearLayout homeBtn = findViewById(R.id.bottomNav1);
         homeBtn.setOnClickListener(this);
+        LinearLayout rankBtn = findViewById(R.id.bottomNav2);
+        rankBtn.setOnClickListener(this);
         LinearLayout searchBtn = findViewById(R.id.bottomNav3);
         searchBtn.setOnClickListener(this);
         LinearLayout watchlistBtn = findViewById(R.id.bottomNav4);
@@ -88,7 +90,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.bottomNav1:
                 i = new Intent(this, HomeActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//                startActivity( new Intent(this, MainActivity.class));
+            case R.id.bottomNav2:
+                i = new Intent(this, RankActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -97,7 +110,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.bottomNav3:
                 i = new Intent(this, SearchActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -106,7 +120,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.bottomNav4:
                 i = new Intent(this, WatchlistActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);

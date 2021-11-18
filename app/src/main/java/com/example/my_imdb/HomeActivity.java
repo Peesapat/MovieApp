@@ -80,8 +80,8 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
         recyclerViewTvSeriesList.setAdapter(tvSeriesAdapter);
 
         //Bottom Navigator
-        LinearLayout homeBtn = findViewById(R.id.bottomNav1);
-        homeBtn.setOnClickListener(this);
+        LinearLayout rankBtn = findViewById(R.id.bottomNav2);
+        rankBtn.setOnClickListener(this);
         LinearLayout searchBtn = findViewById(R.id.bottomNav3);
         searchBtn.setOnClickListener(this);
         LinearLayout watchlistBtn = findViewById(R.id.bottomNav4);
@@ -96,10 +96,21 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
     public void onClick(View v) {
         Intent i;
         switch (v.getId()) {
+            case R.id.bottomNav2:
+                i = new Intent(this, RankActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//                startActivity(new Intent(this, ProfileActivity.class));
             case R.id.bottomNav3:
                 i = new Intent(this, SearchActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -108,7 +119,8 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
             case R.id.bottomNav4:
                 i = new Intent(this, WatchlistActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -117,7 +129,8 @@ public class HomeActivity extends AppCompatActivity implements MovieListAdapter.
             case R.id.bottomNav5:
                 i = new Intent(this, ProfileActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);

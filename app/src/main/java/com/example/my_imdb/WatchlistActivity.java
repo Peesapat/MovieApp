@@ -42,19 +42,22 @@ public class WatchlistActivity extends AppCompatActivity implements SearchListAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watchlist);
 
-        //Bottom Navigator
-        LinearLayout homeBtn = findViewById(R.id.bottomNav1);
-        homeBtn.setOnClickListener(this);
-        LinearLayout searchBtn = findViewById(R.id.bottomNav3);
-        searchBtn.setOnClickListener(this);
-        LinearLayout profileBtn = findViewById(R.id.bottomNav5);
-        profileBtn.setOnClickListener(this);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("dbug", "fetchWatchlistFirestore");
+        //Bottom Navigator
+        LinearLayout homeBtn = findViewById(R.id.bottomNav1);
+        homeBtn.setOnClickListener(this);
+        LinearLayout rankBtn = findViewById(R.id.bottomNav2);
+        rankBtn.setOnClickListener(this);
+        LinearLayout searchBtn = findViewById(R.id.bottomNav3);
+        searchBtn.setOnClickListener(this);
+        LinearLayout profileBtn = findViewById(R.id.bottomNav5);
+        profileBtn.setOnClickListener(this);
+//        Log.d("dbug", "fetchWatchlistFirestore");
         fetchWatchlistFirestore();
 
         recyclerViewWatchlist = findViewById(R.id.watchlistRecyclerView);
@@ -71,7 +74,18 @@ public class WatchlistActivity extends AppCompatActivity implements SearchListAd
             case R.id.bottomNav1:
                 i = new Intent(this, MainActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                overridePendingTransition(0, 0);
+                i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(i);
+                break;
+//                startActivity( new Intent(this, MainActivity.class));
+            case R.id.bottomNav2:
+                i = new Intent(this, RankActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -80,7 +94,8 @@ public class WatchlistActivity extends AppCompatActivity implements SearchListAd
             case R.id.bottomNav3:
                 i = new Intent(this, SearchActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -89,7 +104,8 @@ public class WatchlistActivity extends AppCompatActivity implements SearchListAd
             case R.id.bottomNav5:
                 i = new Intent(this, ProfileActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 overridePendingTransition(0, 0);
                 i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(i);
@@ -125,8 +141,8 @@ public class WatchlistActivity extends AppCompatActivity implements SearchListAd
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d("dbug", "" + document.getData().get("type").toString() + " " + document.getData().get("watchlist_key").toString());
-                                fetchSearchAPI(document.getData().get("type").toString(), document.getData().get("watchlist_key").toString());
+//                                Log.d("dbug", "" + document.getData().get("type").toString() + " " + document.getData().get("movie_id").toString());
+                                fetchSearchAPI(document.getData().get("type").toString(), document.getData().get("movie_id").toString());
                             }
 
                         } else {
